@@ -49,30 +49,28 @@ board = [[None for _ in range(8)] for _ in range(8)]
 def init_board():
     # Pawns
     for i in range(8):
-        board[1][i] = Piece('black', 'pawn')
-        board[6][i] = Piece('white', 'pawn')
+        board[1][i] = Piece('black', 'pawn', piece_images['black_pawn'])
+        board[6][i] = Piece('white', 'pawn', piece_images['white_pawn'])
 
     # Rooks
-    board[0][0] = board[0][7] = Piece('black', 'rook')
-    board[7][0] = board[7][7] = Piece('white', 'rook')
+    board[0][0] = board[0][7] = Piece('black', 'rook', piece_images['black_rook'])
+    board[7][0] = board[7][7] = Piece('white', 'rook', piece_images['white_rook'])
 
     # Knights
-    board[0][1] = board[0][6] = Piece('black', 'knight')
-    board[7][1] = board[7][6] = Piece('white', 'knight')
+    board[0][1] = board[0][6] = Piece('black', 'knight', piece_images['black_knight'])
+    board[7][1] = board[7][6] = Piece('white', 'knight', piece_images['white_knight'])
 
     # Bishops
-    board[0][2] = board[0][5] = Piece('black', 'bishop')
-    board[7][2] = board[7][5] = Piece('white', 'bishop')
+    board[0][2] = board[0][5] = Piece('black', 'bishop', piece_images['black_bishop'])
+    board[7][2] = board[7][5] = Piece('white', 'bishop', piece_images['white_bishop'])
 
     # Queens
-    board[0][3] = Piece('black', 'queen')
-    board[7][3] = Piece('white', 'queen')
+    board[0][3] = Piece('black', 'queen', piece_images['black_queen'])
+    board[7][3] = Piece('white', 'queen', piece_images['white_queen'])
 
     # Kings
-    board[0][4] = Piece('black', 'king')
-    board[7][4] = Piece('white', 'king')
-
-init_board()
+    board[0][4] = Piece('black', 'king', piece_images['black_king'])
+    board[7][4] = Piece('white', 'king', piece_images['white_king'])
 
 # Generate and load piece images
 if not os.path.exists('chess-game/assets/images'):
