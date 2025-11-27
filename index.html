@@ -6,49 +6,99 @@
     <title>Chess Game</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
-            background-color: #f0f0f0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
         }
         #game-container {
             text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            color: #4a5568;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
         }
         #menu {
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        #level-menu {
+            margin-bottom: 30px;
         }
         #board {
             display: grid;
-            grid-template-columns: repeat(8, 100px);
-            grid-template-rows: repeat(8, 100px);
-            border: 2px solid #000;
-            margin: 0 auto;
+            grid-template-columns: repeat(8, 80px);
+            grid-template-rows: repeat(8, 80px);
+            border: 4px solid #2d3748;
+            border-radius: 10px;
+            margin: 0 auto 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
         }
         .square {
-            width: 100px;
-            height: 100px;
+            width: 80px;
+            height: 80px;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 50px;
+            font-size: 40px;
             cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        .square:hover {
+            transform: scale(1.05);
         }
         .light {
-            background-color: #f0d9b5;
+            background: linear-gradient(45deg, #f0d9b5 0%, #f7e6c4 100%);
         }
         .dark {
-            background-color: #b58863;
+            background: linear-gradient(45deg, #b58863 0%, #c69b7b 100%);
         }
         .selected {
-            border: 3px solid green;
+            box-shadow: inset 0 0 0 4px #48bb78, 0 0 20px rgba(72, 187, 120, 0.5);
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: inset 0 0 0 4px #48bb78, 0 0 20px rgba(72, 187, 120, 0.5); }
+            50% { box-shadow: inset 0 0 0 6px #48bb78, 0 0 30px rgba(72, 187, 120, 0.7); }
+            100% { box-shadow: inset 0 0 0 4px #48bb78, 0 0 20px rgba(72, 187, 120, 0.5); }
         }
         button {
             margin: 10px;
-            padding: 10px 20px;
-            font-size: 16px;
+            padding: 12px 24px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        #status {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #4a5568;
+            margin-top: 20px;
         }
     </style>
 </head>
