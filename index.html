@@ -119,21 +119,26 @@
 
         /* Mobile responsiveness */
         @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
             #game-container {
                 padding: 20px;
-                margin: 10px;
+                margin: 0;
+                border-radius: 15px;
             }
             h1 {
                 font-size: 2em;
+                margin-bottom: 20px;
             }
             #board {
-                grid-template-columns: repeat(8, 60px);
-                grid-template-rows: repeat(8, 60px);
+                grid-template-columns: repeat(8, 50px);
+                grid-template-rows: repeat(8, 50px);
             }
             .square {
-                width: 60px;
-                height: 60px;
-                font-size: 30px;
+                width: 50px;
+                height: 50px;
+                font-size: 28px;
             }
             button {
                 padding: 10px 20px;
@@ -144,7 +149,11 @@
                 position: static;
                 text-align: center;
                 margin-top: 20px;
+                padding: 10px;
+                background: rgba(255, 255, 255, 0.9);
+                border-radius: 10px;
                 color: #4a5568;
+                font-size: 0.9em;
             }
         }
 
