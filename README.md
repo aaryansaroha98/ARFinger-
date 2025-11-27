@@ -31,7 +31,7 @@ A fully functional chess game with move validation, check prevention, and turn-b
 3. Run the game: `python chess-game/src/main.py`
 
 ### Web Version
-- **Local**: Run `python chess-game/run_server.py` and open `http://localhost:8000`
+- **Local**: Run `python run_server.py` and open `http://localhost:8000`
 - **Online**: Visit the GitHub Pages URL (see below)
 
 ## How to Play
