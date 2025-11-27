@@ -75,7 +75,15 @@ function drawBoard() {
             square.className = 'square ' + ((row + col) % 2 === 0 ? 'light' : 'dark');
             square.dataset.row = row;
             square.dataset.col = col;
-            square.addEventListener('click', () => handleSquareClick(row, col));
+            square.addEventListener('click', (e) => {
+                e.preventDefault();
+                handleSquareClick(row, col);
+            });
+            // Add touch events for mobile
+            square.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                handleSquareClick(row, col);
+            });
 
             const piece = board[row][col];
             if (piece) {
