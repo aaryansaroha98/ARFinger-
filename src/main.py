@@ -81,14 +81,79 @@ def draw_board(screen):
             pygame.draw.rect(screen, color, (col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
 # Draw pieces
-def draw_pieces(screen, font):
+def draw_pieces(screen):
     for row in range(8):
         for col in range(8):
             piece = board[row][col]
             if piece:
-                symbol = piece_symbols[piece.color][piece.type]
-                text = font.render(symbol, True, BLACK)
-                screen.blit(text, (col * SQUARE_SIZE + SQUARE_SIZE//2 - text.get_width()//2, row * SQUARE_SIZE + SQUARE_SIZE//2 - text.get_height()//2))
+                draw_piece(screen, row, col, piece)
+
+def draw_piece(screen, row, col, piece):
+    x = col * SQUARE_SIZE + SQUARE_SIZE // 2
+    y = row * SQUARE_SIZE + SQUARE_SIZE // 2
+    color = WHITE if piece.color == 'white' else BLACK
+    size = SQUARE_SIZE // 4
+
+    if piece.type == 'pawn':
+        # Pawn base
+        pygame.draw.circle(screen, color, (x, y + size), size // 2)
+        # Pawn stem
+        pygame.draw.rect(screen, color, (x - size // 4, y - size // 2, size // 2, size))
+        # Pawn head
+        pygame.draw.circle(screen, color, (x, y - size), size // 2)
+
+    elif piece.type == 'rook':
+        # Base
+        pygame.draw.rect(screen, color, (x - size, y + size // 2, size * 2, size // 2))
+        # Tower body
+        pygame.draw.rect(screen, color, (x - size * 3 // 4, y - size, size * 3 // 2, size))
+        # Battlements
+        for i in range(4):
+            pygame.draw.rect(screen, color, (x - size + i * size // 2, y - size, size // 4, size // 4))
+
+    elif piece.type == 'bishop':
+        # Base
+        pygame.draw.circle(screen, color, (x, y + size), size // 2)
+        # Body
+        pygame.draw.rect(screen, color, (x - size // 2, y - size // 2, size, size))
+        # Mitre
+        pygame.draw.polygon(screen, color, [(x, y - size), (x - size // 2, y - size * 2), (x + size // 2, y - size * 2)])
+
+    elif piece.type == 'knight':
+        # Body
+        pygame.draw.ellipse(screen, color, (x - size, y - size // 2, size * 2, size))
+        # Neck
+        pygame.draw.rect(screen, color, (x + size // 2, y - size, size // 2, size))
+        # Head
+        pygame.draw.circle(screen, color, (x + size, y - size), size // 2)
+        # Ear
+        pygame.draw.circle(screen, color, (x + size * 3 // 4, y - size * 3 // 2), size // 4)
+
+    elif piece.type == 'queen':
+        # Base
+        pygame.draw.circle(screen, color, (x, y + size), size // 2)
+        # Body
+        pygame.draw.rect(screen, color, (x - size // 2, y - size // 2, size, size))
+        # Crown
+        crown_points = []
+        for i in range(8):
+            angle = i * 45
+            px = x + int(size * 0.8 * math.cos(math.radians(angle)))
+            py = y - size * 1.5 + int(size * 0.3 * math.sin(math.radians(angle)))
+            crown_points.append((px, py))
+        pygame.draw.polygon(screen, color, crown_points)
+
+    elif piece.type == 'king':
+        # Base
+        pygame.draw.circle(screen, color, (x, y + size), size // 2)
+        # Body
+        pygame.draw.rect(screen, color, (x - size // 2, y - size // 2, size, size))
+        # Crown
+        pygame.draw.polygon(screen, color, [(x - size, y - size), (x - size // 2, y - size * 2), (x, y - size), (x + size // 2, y - size * 2), (x + size, y - size)])
+        # Cross vertical
+        pygame.draw.rect(screen, color, (x - size // 8, y - size * 2 - size // 2, size // 4, size))
+        # Cross horizontal
+        pygame.draw.rect(screen, color, (x - size // 2, y - size * 2 - size // 4, size, size // 4))
 
 def is_path_clear(start_row, start_col, end_row, end_col):
     dr = 1 if end_row > start_row else -1 if end_row < start_row else 0
@@ -305,7 +370,7 @@ def main():
 
         screen.fill(WHITE)
         draw_board(screen)
-        draw_pieces(screen, font)
+        draw_pieces(screen)
         if selected:
             pygame.draw.rect(screen, (0, 255, 0), (selected[1] * SQUARE_SIZE, selected[0] * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE), 3)
         pygame.display.flip()
