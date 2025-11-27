@@ -2,6 +2,7 @@ import pygame
 import sys
 import math
 import random
+import os
 
 # Initialize Pygame
 pygame.init()
@@ -35,7 +36,7 @@ piece_symbols = {
 
 # Piece classes
 class Piece:
-    def __init__(self, color, type, image=None):
+    def __init__(self, color, type, image):
         self.color = color
         self.type = type
         self.image = image
@@ -73,6 +74,68 @@ def init_board():
 
 init_board()
 
+# Generate and load piece images
+if not os.path.exists('chess-game/assets/images'):
+    os.makedirs('chess-game/assets/images')
+
+def draw_piece_on_surf(surf, ptype, color):
+    x = SQUARE_SIZE // 2
+    y = SQUARE_SIZE // 2
+    c = WHITE if color == 'white' else BLACK
+    size = SQUARE_SIZE // 4
+
+    if ptype == 'pawn':
+        pygame.draw.circle(surf, c, (x, y + size), size // 2)
+        pygame.draw.rect(surf, c, (x - size // 4, y - size // 2, size // 2, size))
+        pygame.draw.circle(surf, c, (x, y - size), size // 2)
+
+    elif ptype == 'rook':
+        pygame.draw.rect(surf, c, (x - size, y + size // 2, size * 2, size // 2))
+        pygame.draw.rect(surf, c, (x - size * 3 // 4, y - size, size * 3 // 2, size))
+        for i in range(4):
+            pygame.draw.rect(surf, c, (x - size + i * size // 2, y - size, size // 4, size // 4))
+
+    elif ptype == 'bishop':
+        pygame.draw.circle(surf, c, (x, y + size), size // 2)
+        pygame.draw.rect(surf, c, (x - size // 2, y - size // 2, size, size))
+        pygame.draw.polygon(surf, c, [(x, y - size), (x - size // 2, y - size * 2), (x + size // 2, y - size * 2)])
+
+    elif ptype == 'knight':
+        pygame.draw.ellipse(surf, c, (x - size, y - size // 2, size * 2, size))
+        pygame.draw.rect(surf, c, (x + size // 2, y - size, size // 2, size))
+        pygame.draw.circle(surf, c, (x + size, y - size), size // 2)
+        pygame.draw.circle(surf, c, (x + size * 3 // 4, y - size * 3 // 2), size // 4)
+
+    elif ptype == 'queen':
+        pygame.draw.circle(surf, c, (x, y + size), size // 2)
+        pygame.draw.rect(surf, c, (x - size // 2, y - size // 2, size, size))
+        crown_points = []
+        for i in range(8):
+            angle = i * 45
+            px = x + int(size * 0.8 * math.cos(math.radians(angle)))
+            py = y - size * 1.5 + int(size * 0.3 * math.sin(math.radians(angle)))
+            crown_points.append((px, py))
+        pygame.draw.polygon(surf, c, crown_points)
+
+    elif ptype == 'king':
+        pygame.draw.circle(surf, c, (x, y + size), size // 2)
+        pygame.draw.rect(surf, c, (x - size // 2, y - size // 2, size, size))
+        pygame.draw.polygon(surf, c, [(x - size, y - size), (x - size // 2, y - size * 2), (x, y - size), (x + size // 2, y - size * 2), (x + size, y - size)])
+        pygame.draw.rect(surf, c, (x - size // 8, y - size * 2 - size // 2, size // 4, size))
+        pygame.draw.rect(surf, c, (x - size // 2, y - size * 2 - size // 4, size, size // 4))
+
+piece_images = {}
+for color in ['white', 'black']:
+    for ptype in ['pawn', 'rook', 'bishop', 'knight', 'queen', 'king']:
+        if not os.path.exists(f'chess-game/assets/images/{color}_{ptype}.png'):
+            surf = pygame.Surface((SQUARE_SIZE, SQUARE_SIZE), pygame.SRCALPHA)
+            draw_piece_on_surf(surf, ptype, color)
+            pygame.image.save(surf, f'chess-game/assets/images/{color}_{ptype}.png')
+        piece_images[f'{color}_{ptype}'] = pygame.image.load(f'chess-game/assets/images/{color}_{ptype}.png')
+
+# Re-init board with images
+init_board()
+
 # Draw board
 def draw_board(screen):
     for row in range(8):
@@ -86,74 +149,9 @@ def draw_pieces(screen):
         for col in range(8):
             piece = board[row][col]
             if piece:
-                draw_piece(screen, row, col, piece)
+                screen.blit(piece.image, (col * SQUARE_SIZE, row * SQUARE_SIZE))
 
-def draw_piece(screen, row, col, piece):
-    x = col * SQUARE_SIZE + SQUARE_SIZE // 2
-    y = row * SQUARE_SIZE + SQUARE_SIZE // 2
-    color = WHITE if piece.color == 'white' else BLACK
-    size = SQUARE_SIZE // 4
 
-    if piece.type == 'pawn':
-        # Pawn base
-        pygame.draw.circle(screen, color, (x, y + size), size // 2)
-        # Pawn stem
-        pygame.draw.rect(screen, color, (x - size // 4, y - size // 2, size // 2, size))
-        # Pawn head
-        pygame.draw.circle(screen, color, (x, y - size), size // 2)
-
-    elif piece.type == 'rook':
-        # Base
-        pygame.draw.rect(screen, color, (x - size, y + size // 2, size * 2, size // 2))
-        # Tower body
-        pygame.draw.rect(screen, color, (x - size * 3 // 4, y - size, size * 3 // 2, size))
-        # Battlements
-        for i in range(4):
-            pygame.draw.rect(screen, color, (x - size + i * size // 2, y - size, size // 4, size // 4))
-
-    elif piece.type == 'bishop':
-        # Base
-        pygame.draw.circle(screen, color, (x, y + size), size // 2)
-        # Body
-        pygame.draw.rect(screen, color, (x - size // 2, y - size // 2, size, size))
-        # Mitre
-        pygame.draw.polygon(screen, color, [(x, y - size), (x - size // 2, y - size * 2), (x + size // 2, y - size * 2)])
-
-    elif piece.type == 'knight':
-        # Body
-        pygame.draw.ellipse(screen, color, (x - size, y - size // 2, size * 2, size))
-        # Neck
-        pygame.draw.rect(screen, color, (x + size // 2, y - size, size // 2, size))
-        # Head
-        pygame.draw.circle(screen, color, (x + size, y - size), size // 2)
-        # Ear
-        pygame.draw.circle(screen, color, (x + size * 3 // 4, y - size * 3 // 2), size // 4)
-
-    elif piece.type == 'queen':
-        # Base
-        pygame.draw.circle(screen, color, (x, y + size), size // 2)
-        # Body
-        pygame.draw.rect(screen, color, (x - size // 2, y - size // 2, size, size))
-        # Crown
-        crown_points = []
-        for i in range(8):
-            angle = i * 45
-            px = x + int(size * 0.8 * math.cos(math.radians(angle)))
-            py = y - size * 1.5 + int(size * 0.3 * math.sin(math.radians(angle)))
-            crown_points.append((px, py))
-        pygame.draw.polygon(screen, color, crown_points)
-
-    elif piece.type == 'king':
-        # Base
-        pygame.draw.circle(screen, color, (x, y + size), size // 2)
-        # Body
-        pygame.draw.rect(screen, color, (x - size // 2, y - size // 2, size, size))
-        # Crown
-        pygame.draw.polygon(screen, color, [(x - size, y - size), (x - size // 2, y - size * 2), (x, y - size), (x + size // 2, y - size * 2), (x + size, y - size)])
-        # Cross vertical
-        pygame.draw.rect(screen, color, (x - size // 8, y - size * 2 - size // 2, size // 4, size))
-        # Cross horizontal
-        pygame.draw.rect(screen, color, (x - size // 2, y - size * 2 - size // 4, size, size // 4))
 
 def is_path_clear(start_row, start_col, end_row, end_col):
     dr = 1 if end_row > start_row else -1 if end_row < start_row else 0
@@ -296,6 +294,7 @@ def main():
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Chess Game")
     font = pygame.font.SysFont("DejaVu Sans", 60)
+    font_small = pygame.font.SysFont("DejaVu Sans", 36)
     clock = pygame.time.Clock()
     selected = None
     current_player = 'white'
@@ -306,9 +305,9 @@ def main():
     menu = True
     while menu:
         screen.fill(BLACK)
-        text1 = font.render("Press 1 for Two Player", True, WHITE)
+        text1 = font_small.render("Press 1 for Two Player", True, WHITE)
         screen.blit(text1, (WIDTH//2 - 150, HEIGHT//2 - 100))
-        text2 = font.render("Press 2 for Vs AI", True, WHITE)
+        text2 = font_small.render("Press 2 for Vs AI", True, WHITE)
         screen.blit(text2, (WIDTH//2 - 150, HEIGHT//2 - 50))
         pygame.display.flip()
         for event in pygame.event.get():
@@ -325,7 +324,7 @@ def main():
                     level_menu = True
                     while level_menu:
                         screen.fill(BLACK)
-                        text1 = font.render("Choose level: 1.Easy 2.Medium 3.Hard", True, WHITE)
+                        text1 = font_small.render("Choose level: 1.Easy 2.Medium 3.Hard", True, WHITE)
                         screen.blit(text1, (WIDTH//2 - 200, HEIGHT//2))
                         pygame.display.flip()
                         for event in pygame.event.get():
