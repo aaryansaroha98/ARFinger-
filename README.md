@@ -8,7 +8,7 @@ A fully functional chess game with move validation, check prevention, and turn-b
 - Move validation for all pieces
 - Prevents moves that would leave the king in check
 - Turn-based gameplay for two players
-- Graphical interface with a chessboard
+- Graphical interface with custom-drawn chess piece icons on a chessboard
 
 ## Requirements
 
