@@ -1,6 +1,7 @@
 import pygame
 import sys
 import math
+import random
 
 # Initialize Pygame
 pygame.init()
@@ -174,6 +175,67 @@ def make_move(start_row, start_col, end_row, end_col):
         return False
     return True
 
+def get_legal_moves(color):
+    moves = []
+    for r in range(8):
+        for c in range(8):
+            piece = board[r][c]
+            if piece and piece.color == color:
+                for er in range(8):
+                    for ec in range(8):
+                        if is_valid_move(piece, r, c, er, ec):
+                            # Simulate move
+                            captured = board[er][ec]
+                            board[er][ec] = piece
+                            board[r][c] = None
+                            if not is_in_check(color):
+                                moves.append((r, c, er, ec))
+                            # Revert
+                            board[r][c] = piece
+                            board[er][ec] = captured
+    return moves
+
+def evaluate_board():
+    values = {'pawn': 1, 'knight': 3, 'bishop': 3, 'rook': 5, 'queen': 9, 'king': 0}
+    score = 0
+    for r in range(8):
+        for c in range(8):
+            p = board[r][c]
+            if p:
+                val = values[p.type]
+                if p.color == 'white':
+                    score += val
+                else:
+                    score -= val
+    return score
+
+def ai_move(color, level):
+    moves = get_legal_moves(color)
+    if not moves:
+        return None
+    if level == 'easy':
+        return random.choice(moves)
+    else:
+        best_move = None
+        best_score = -999 if color == 'white' else 999
+        for move in moves:
+            sr, sc, er, ec = move
+            captured = board[er][ec]
+            board[er][ec] = board[sr][sc]
+            board[sr][sc] = None
+            score = evaluate_board()
+            board[sr][sc] = board[er][ec]
+            board[er][ec] = captured
+            if color == 'white':
+                if score > best_score:
+                    best_score = score
+                    best_move = move
+            else:
+                if score < best_score:
+                    best_score = score
+                    best_move = move
+        return best_move
+
 # Main loop
 def main():
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -182,13 +244,62 @@ def main():
     clock = pygame.time.Clock()
     selected = None
     current_player = 'white'
+    game_mode = None
+    level = None
 
-    while True:
+    # Menu
+    menu = True
+    while menu:
+        screen.fill(BLACK)
+        text1 = font.render("Press 1 for Two Player", True, WHITE)
+        screen.blit(text1, (WIDTH//2 - 150, HEIGHT//2 - 100))
+        text2 = font.render("Press 2 for Vs AI", True, WHITE)
+        screen.blit(text2, (WIDTH//2 - 150, HEIGHT//2 - 50))
+        pygame.display.flip()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            elif event.type == pygame.MOUSEBUTTONDOWN:
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_1:
+                    game_mode = 'two_player'
+                    menu = False
+                elif event.key == pygame.K_2:
+                    game_mode = 'vs_ai'
+                    menu = False
+                    level_menu = True
+                    while level_menu:
+                        screen.fill(BLACK)
+                        text1 = font.render("Choose level: 1.Easy 2.Medium 3.Hard", True, WHITE)
+                        screen.blit(text1, (WIDTH//2 - 200, HEIGHT//2))
+                        pygame.display.flip()
+                        for event in pygame.event.get():
+                            if event.type == pygame.KEYDOWN:
+                                if event.key == pygame.K_1:
+                                    level = 'easy'
+                                    level_menu = False
+                                elif event.key == pygame.K_2:
+                                    level = 'medium'
+                                    level_menu = False
+                                elif event.key == pygame.K_3:
+                                    level = 'hard'
+                                    level_menu = False
+
+    while True:
+        if game_mode == 'vs_ai' and current_player == 'black':
+            pygame.time.wait(500)
+            move = ai_move('black', level)
+            if move:
+                sr, sc, er, ec = move
+                make_move(sr, sc, er, ec)
+                current_player = 'white'
+            # else game over
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN and current_player == 'white':
                 x, y = pygame.mouse.get_pos()
                 col = x // SQUARE_SIZE
                 row = y // SQUARE_SIZE
