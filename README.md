@@ -1,6 +1,6 @@
 # Chess Game
 
-A fully functional chess game with move validation, check prevention, and turn-based gameplay, built using Python and Pygame.
+A fully functional chess game with move validation, check prevention, and turn-based gameplay, built using Python and JavaScript.
 
 ## Features
 
@@ -9,24 +9,30 @@ A fully functional chess game with move validation, check prevention, and turn-b
 - Prevents moves that would leave the king in check
 - Turn-based gameplay for two players or vs AI
 - AI with three difficulty levels: Easy (random moves), Medium/Hard (material-based evaluation)
-- Graphical interface with custom-drawn chess piece icons on a chessboard
+- Desktop version with Pygame and custom graphics
+- Web version with modern UI, fully responsive and mobile-compatible
+- Traditional Unicode chess piece symbols
 
 ## Requirements
 
+### Desktop Version
 - Python 3.x
 - Pygame library
 
-## Installation
+### Web Version
+- Any modern web browser
+- No installation required!
+
+## Installation & Usage
 
 ### Desktop Version
 1. Ensure Python 3 is installed on your system.
 2. Install Pygame: `pip install pygame`
-3. Run the game: `python src/main.py`
+3. Run the game: `python chess-game/src/main.py`
 
 ### Web Version
-1. Run the local web server: `python run_server.py`
-2. Open your browser and go to `http://localhost:8000`
-3. Enjoy the chess game in your browser!
+- **Local**: Run `python chess-game/run_server.py` and open `http://localhost:8000`
+- **Online**: Visit the GitHub Pages URL (see below)
 
 ## How to Play
 
@@ -36,13 +42,26 @@ A fully functional chess game with move validation, check prevention, and turn-b
 
 ## Project Structure
 
-- `src/main.py`: Main game file
+- `index.html`: Web game interface
+- `script.js`: Web game logic
+- `chess-game/`: Desktop version and assets
+  - `src/main.py`: Desktop game file
+  - `assets/images/`: Generated piece images
+  - `run_server.py`: Local web server script
 - `README.md`: This file
-- `requirements.txt`: Python dependencies
+
+## Live Demo
+
+Play the game online at: [GitHub Pages URL will be here after deployment]
 
 ## Contributing
 
 Feel free to fork and improve the game!
+
+## Credits
+
+Made by Aaryan Saroha
+Instagram: [@aaryan_saroha98](https://instagram.com/aaryan_saroha98)
 
 ## License
 
