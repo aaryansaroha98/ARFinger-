@@ -18,9 +18,15 @@ A fully functional chess game with move validation, check prevention, and turn-b
 
 ## Installation
 
+### Desktop Version
 1. Ensure Python 3 is installed on your system.
 2. Install Pygame: `pip install pygame`
 3. Run the game: `python src/main.py`
+
+### Web Version
+1. Run the local web server: `python run_server.py`
+2. Open your browser and go to `http://localhost:8000`
+3. Enjoy the chess game in your browser!
 
 ## How to Play
 
