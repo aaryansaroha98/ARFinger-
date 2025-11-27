@@ -75,30 +75,55 @@ def draw_piece(screen, row, col, piece):
     color = WHITE if piece.color == 'white' else BLACK
     size = SQUARE_SIZE // 3
     if piece.type == 'pawn':
-        pygame.draw.circle(screen, color, (x, y), size // 2)
-        pygame.draw.circle(screen, color, (x, y - size // 4), size // 4)  # head
+        # Pawn base
+        pygame.draw.circle(screen, color, (x, y + size // 4), size // 3)
+        # Pawn body
+        pygame.draw.rect(screen, color, (x - size // 6, y - size // 2, size // 3, size // 2))
+        # Pawn head
+        pygame.draw.circle(screen, color, (x, y - size // 3), size // 4)
     elif piece.type == 'rook':
-        pygame.draw.rect(screen, color, (x - size // 2, y - size // 2, size, size))
-        # Towers
-        pygame.draw.rect(screen, color, (x - size // 2, y - size, size // 4, size // 2))
-        pygame.draw.rect(screen, color, (x + size // 4, y - size, size // 4, size // 2))
+        # Base
+        pygame.draw.rect(screen, color, (x - size // 2, y + size // 4, size, size // 4))
+        # Tower
+        pygame.draw.rect(screen, color, (x - size // 3, y - size // 2, size // 3 * 2, size // 2))
+        # Battlements
+        for i in range(3):
+            pygame.draw.rect(screen, color, (x - size // 2 + i * size // 3, y - size // 2, size // 6, size // 6))
     elif piece.type == 'bishop':
-        pygame.draw.polygon(screen, color, [(x, y - size), (x - size // 2, y), (x + size // 2, y)])
-        pygame.draw.circle(screen, color, (x, y - size // 2), size // 4)
+        # Base
+        pygame.draw.circle(screen, color, (x, y + size // 4), size // 4)
+        # Body
+        pygame.draw.polygon(screen, color, [(x, y - size // 2), (x - size // 4, y), (x + size // 4, y)])
+        # Head (mitre)
+        pygame.draw.polygon(screen, color, [(x, y - size // 2), (x - size // 6, y - size), (x + size // 6, y - size)])
     elif piece.type == 'knight':
-        pygame.draw.polygon(screen, color, [(x - size // 2, y), (x - size // 4, y - size), (x + size // 4, y - size), (x + size // 2, y), (x, y + size // 2)])
+        # Body
+        pygame.draw.ellipse(screen, color, (x - size // 2, y - size // 4, size, size // 2))
+        # Head
+        pygame.draw.circle(screen, color, (x + size // 4, y - size // 2), size // 4)
+        # Mane
+        pygame.draw.polygon(screen, color, [(x - size // 2, y - size // 4), (x - size // 3, y - size), (x, y - size // 2)])
     elif piece.type == 'queen':
-        pygame.draw.circle(screen, color, (x, y), size // 2)
+        # Base
+        pygame.draw.circle(screen, color, (x, y + size // 4), size // 4)
+        # Body
+        pygame.draw.rect(screen, color, (x - size // 4, y - size // 3, size // 2, size // 3))
         # Crown
-        for i in range(5):
-            angle = i * 72 - 90
-            px = x + int(size // 2 * math.cos(math.radians(angle)))
-            py = y + int(size // 2 * math.sin(math.radians(angle)))
-            pygame.draw.circle(screen, color, (px, py), size // 8)
+        for i in range(6):
+            angle = i * 60
+            px = x + int(size // 3 * math.cos(math.radians(angle)))
+            py = y - size // 2 + int(size // 6 * math.sin(math.radians(angle)))
+            pygame.draw.circle(screen, color, (px, py), size // 12)
     elif piece.type == 'king':
-        pygame.draw.rect(screen, color, (x - size // 4, y - size // 2, size // 2, size))
+        # Base
+        pygame.draw.circle(screen, color, (x, y + size // 4), size // 4)
+        # Body
+        pygame.draw.rect(screen, color, (x - size // 4, y - size // 3, size // 2, size // 3))
         # Crown
-        pygame.draw.polygon(screen, color, [(x - size // 2, y - size // 2), (x - size // 4, y - size), (x, y - size // 2), (x + size // 4, y - size), (x + size // 2, y - size // 2)])
+        pygame.draw.polygon(screen, color, [(x - size // 3, y - size // 2), (x - size // 6, y - size), (x, y - size // 2), (x + size // 6, y - size), (x + size // 3, y - size // 2)])
+        # Cross on crown
+        pygame.draw.rect(screen, color, (x - size // 12, y - size - size // 6, size // 6, size // 3))
+        pygame.draw.rect(screen, color, (x - size // 6, y - size - size // 12, size // 3, size // 6))
 
 def is_path_clear(start_row, start_col, end_row, end_col):
     dr = 1 if end_row > start_row else -1 if end_row < start_row else 0
